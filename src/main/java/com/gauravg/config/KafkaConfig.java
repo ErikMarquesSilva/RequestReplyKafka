@@ -3,6 +3,7 @@ package com.gauravg.config;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -37,6 +38,16 @@ public class KafkaConfig {
 	  
 	  @Value("${kafka.consumergroup}")
 	  private String consumerGroup;
+
+	@Bean
+	public NewTopic requestTopic() {
+		return new NewTopic("request-topic", 1, (short) 1);
+	}
+
+	@Bean
+	public NewTopic requestReplyTopic() {
+		return new NewTopic("requestreply-topic", 1, (short) 1);
+	}
 	
 	  @Bean
 	  public Map<String, Object> producerConfigs() {

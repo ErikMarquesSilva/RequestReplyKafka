@@ -1,5 +1,6 @@
 package com.gauravg.controller;
 
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -34,10 +35,15 @@ public class SumController {
 	@ResponseBody
 	@PostMapping(value="/sum",produces=MediaType.APPLICATION_JSON_VALUE,consumes=MediaType.APPLICATION_JSON_VALUE)
 	public Model sum(@RequestBody Model request) throws InterruptedException, ExecutionException {
+		final String uuid =  UUID.randomUUID().toString();
+		request.setAdditionalProperty("uuid", uuid);
+
 		// create producer record
 		ProducerRecord<String, Model> record = new ProducerRecord<String, Model>(requestTopic, request);
+
 		// set reply topic in header
 		record.headers().add(new RecordHeader(KafkaHeaders.REPLY_TOPIC, requestReplyTopic.getBytes()));
+
 		// post in kafka topic
 		RequestReplyFuture<String, Model, Model> sendAndReceive = kafkaTemplate.sendAndReceive(record);
 
